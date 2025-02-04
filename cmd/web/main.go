@@ -14,10 +14,9 @@ import (
 )
 
 const portNumber = ":8080"
+
 var app config.AppConfig
 var session *scs.SessionManager
-
-
 
 func main() {
 
@@ -48,12 +47,13 @@ func main() {
 	// http.HandleFunc("/", handlers.Repo.Home)
 	// http.HandleFunc("/about", handlers.Repo.About)
 
-
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
 	fmt.Printf("Starting app on port %s\n", portNumber)
 	// _ = http.ListenAndServe(portNumber, nil)
 	srv := &http.Server{
-		Addr: portNumber,
+
+		Addr:    portNumber,
 		Handler: routes(&app),
 	}
 
