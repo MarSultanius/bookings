@@ -1,0 +1,16 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>This is a home page</h1>
+               <p> Here your IP
+                {{index .StringMap "test"}}
+               </p>
+               <img src="/static/images/house.jpg" alt="HOUSE">
+                <p>some new text</p>
+        </div>
+    </div>
+</div>
+{{end}}
