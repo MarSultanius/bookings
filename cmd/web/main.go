@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/MarSultanius/bookings/internal/config"
+	"github.com/MarSultanius/bookings/internal/handlers"
+	"github.com/MarSultanius/bookings/internal/render"
+	"gith
 	"github.com/alexedwards/scs/v2"
-	"github.com/marSultanius/bookings/internal/config"
-	"github.com/marSultanius/bookings/internal/handlers"
-	"github.com/marSultanius/bookings/internal/render"
 	"log"
 	"net/http"
 	"time"

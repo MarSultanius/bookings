@@ -3,14 +3,13 @@ package render
 import (
 	"bytes"
 	"fmt"
+	"github.com/MarSultanius/bookings/internal/config"
+	"github.com/MarSultanius/bookings/internal/models"
+	"github.com/justinas/nosurf"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
-
-	"github.com/justinas/nosurf"
-	"github.com/marSultanius/bookings/internal/config"
-	"github.com/marSultanius/bookings/internal/models"
 )
 
 var functions = template.FuncMap{}
@@ -28,7 +27,7 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 }
 
 // RenderTemplate renders a template
-func RenderTemplate(w http.ResponseWriter,  r *http.Request, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
