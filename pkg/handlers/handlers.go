@@ -1,20 +1,13 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"github.com/tsawler/bookings-app/pkg/config"
+	"github.com/tsawler/bookings-app/pkg/models"
+	"github.com/tsawler/bookings-app/pkg/render"
 	"net/http"
-	"strings"
-	"github.com/MarSultanius/bookings/pkg/models"
-	"github.com/MarSultanius/bookings/pkg/config"
-	"github.com/MarSultanius/bookings/pkg/render"
 )
 
-// API Key for ipinfo.io (получите свой ключ на ipinfo.io)
-const ipInfoAPI = "https://ipinfo.io/%s?token=0f1c3905682fb8"
-
-// Repo  the repository used by the handlers
+// Repo the repository used by the handlers
 var Repo *Repository
 
 // Repository is the repository type
@@ -34,6 +27,7 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 
+// Home is the handler for the home page
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
 	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
@@ -41,61 +35,42 @@ func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
+// About is the handler for the about page
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
+	// perform some logic
 	stringMap := make(map[string]string)
-	stringMap["test"] = "Hello, again."
+	stringMap["test"] = "Hello, again"
 
 	remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
 	stringMap["remote_ip"] = remoteIP
 
-	// Получение геолокации по IP
-	geolocationData, err := getGeolocationByIP(remoteIP)
-	if err != nil {
-		stringMap["geolocation"] = "Unable to retrieve geolocation"
-	} else {
-
-		fmt.Println("Geolocation Data:")
-		fmt.Printf("Country: %s, City: %s, Location: %s\n", geolocationData.Country, geolocationData.City, geolocationData.Loc)
-
-		stringMap["geolocation"] = fmt.Sprintf("Country: %s, City: %s, Location: %s", geolocationData.Country, geolocationData.City, geolocationData.Loc)
-	}
-
+	// send data to the template
 	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
 	})
 }
 
-// Структура для геолокации
-type GeolocationData struct {
-	Country string `json:"country"`
-	City    string `json:"city"`
-	Loc     string `json:"loc"` // Coordinates: "latitude,longitude"
+// Reservation renders the make a reservation page and displays form
+func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "make-reservation.page.tmpl", &models.TemplateData{})
 }
 
-// Функция для получения геолокации по IP
-func getGeolocationByIP(ip string) (*GeolocationData, error) {
-	url := fmt.Sprintf(ipInfoAPI, strings.TrimSpace(ip))
+// Generals renders the room page
+func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "generals.page.tmpl", &models.TemplateData{})
+}
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
+// Majors renders the room page
+func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "majors.page.tmpl", &models.TemplateData{})
+}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to get data from ipinfo.io, status code: %d", resp.StatusCode)
-	}
+// Availability renders the search availability page
+func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "search-availability.page.tmpl", &models.TemplateData{})
+}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	var geolocation GeolocationData
-	err = json.Unmarshal(body, &geolocation)
-	if err != nil {
-		return nil, err
-	}
-
-	return &geolocation, nil
+// Contact renders the contact page
+func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "contact.page.tmpl", &models.TemplateData{})
 }
